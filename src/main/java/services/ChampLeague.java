@@ -1,49 +1,81 @@
 package services;
-import models.Team;
-import models.Game;
+import models.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ChampLeague {
-    private List<Team> teamList;
-    private List<Game> gameList;
+    private List<Group> groups;
+    private List<Team> roundOf16Teams;
+    private List<Team> quarterFinalTeams;
+    private List<Team> semiFinalTeams;
+    private List<Team> finalists;
+    private Team winner;
 
-    public ChampLeague(List<Team> teamList, List<Game> gameList) {
-        this.teamList = teamList;
-        this.gameList = gameList;
+    public ChampLeague(List<Group> groups) {
+        this.groups = groups;
+        this.roundOf16Teams = new ArrayList<>();
+        this.quarterFinalTeams = new ArrayList<>();
+        this.semiFinalTeams = new ArrayList<>();
+        this.finalists = new ArrayList<>();
     }
 
-    public List<Team> getTeamList() {
-        return teamList;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public List<Game> getGameList() {
-        return gameList;
-    }
-
-    public Team getTeam(String name) {
-        for (Team team : teamList) {
-            if (team.getName().equals(name)) {
-                return team;
-            }
+    public void simulateGroupStage() {
+        for (Group group : groups) {
+            group.simulateMatches();
+            roundOf16Teams.addAll(group.getTopTwoTeams());
         }
-        return null;
     }
 
-    public Game getGame(Team a, Team b) {
-        for (Game game : gameList) {
-            if ((game.getTeamA().equals(a) && game.getTeamB().equals(b)) ||
-                    (game.getTeamA().equals(b) && game.getTeamB().equals(a))) {
-                return game;
-            }
+    public List<Team> getRoundOf16Teams() {
+        return roundOf16Teams;
+    }
+
+    public List<Team> getQuarterFinalTeams() {
+        return quarterFinalTeams;
+    }
+
+    public List<Team> getSemiFinalTeams() {
+        return semiFinalTeams;
+    }
+
+    public List<Team> getFinalists() {
+        return finalists;
+    }
+
+    public void simulateKnockoutStage() {
+        quarterFinalTeams = simulateRound(roundOf16Teams);
+        semiFinalTeams = simulateRound(quarterFinalTeams);
+        finalists = simulateRound(semiFinalTeams);
+        winner = simulateRound(finalists).get(0);
+    }
+
+    private List<Team> simulateRound(List<Team> teams) {
+        List<Team> winners = new ArrayList<>();
+        Collections.shuffle(teams);
+        for (int i = 0; i < teams.size(); i += 2) {
+            winners.add(teams.get(i)); // Simulating a win for team[i]
         }
-        return null;
+        return winners;
     }
 
-    public void printGames() {
-        for (Game game : gameList) {
-            System.out.println("Game at " + game.getLocation() + " between " +
-                    game.getTeamA().getName() + " and " + game.getTeamB().getName() +
-                    " - Score: " + game.getScore().getA() + ":" + game.getScore().getB());
+    public Team getWinner() {
+        return winner;
+    }
+
+    public void reset() {
+        roundOf16Teams.clear();
+        quarterFinalTeams.clear();
+        semiFinalTeams.clear();
+        finalists.clear();
+        winner = null;
+
+        for (Group group : groups) {
+            group.reset(); // Assuming Group class has a reset method
         }
     }
 }

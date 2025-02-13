@@ -1,19 +1,27 @@
 package models;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
     private String name;
     private Record record;
-    private List<Player> playerList;
+    private List<Player> players;
     private Player captain;
     private Coach coach;
 
-    public Team(String name, Record record, List<Player> playerList, Player captain, Coach coach) {
+    // Full constructor
+    public Team(String name, Record record, List<Player> players, Player captain, Coach coach) {
         this.name = name;
         this.record = record;
-        this.playerList = playerList;
+        this.players = players;
         this.captain = captain;
         this.coach = coach;
+    }
+
+    // Overloaded constructor (if players, captain, and coach are optional)
+    public Team(String name, Record record) {
+        this(name, record, new ArrayList<>(), null, null);
     }
 
     public String getName() {
@@ -25,7 +33,7 @@ public class Team {
     }
 
     public List<Player> getPlayers() {
-        return playerList;
+        return players;
     }
 
     public Player getCaptain() {

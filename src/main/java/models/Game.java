@@ -2,52 +2,23 @@ package models;
 
 public class Game {
     private String location;
-    private Team teamA;
-    private Team teamB;
-    private Score score;
+    private Team homeTeam;
+    private Team awayTeam;
+    private int homeScore;
+    private int awayScore;
 
-    public Game(String location, Team teamA, Team teamB) {
+    public Game(String location, Team homeTeam, Team awayTeam) {
         this.location = location;
-        this.teamA = teamA;
-        this.teamB = teamB;
-        this.score = new Score(0, 0);
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
     }
 
-    public String getLocation() {
-        return location;
+    public void setScore(int home, int away) {
+        this.homeScore = home;
+        this.awayScore = away;
     }
 
-    public Team getTeamA() {
-        return teamA;
-    }
-
-    public Team getTeamB() {
-        return teamB;
-    }
-
-    public Score getScore() {
-        return score;
-    }
-
-    public void setScore(int a, int b) {
-        this.score = new Score(a, b);
-    }
-
-    public static class Score {
-        private int a;
-        private int b;
-
-        public Score(int a, int b) {
-            this.a = a;
-            this.b = b;
-        }
-
-        public int getA() {
-            return a;
-        }
-
-        public int getB() {
-            return b;
-        }
+    public Team getWinner() {
+        return homeScore > awayScore ? homeTeam : awayTeam;
     }
 }
